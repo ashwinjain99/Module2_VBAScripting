@@ -19,59 +19,64 @@ Sub Stock_Volume():
     Dim Summary_Table_Row As Integer
     Summary_Table_Row = 2
     
+    Dim ws As Worksheet
+    
     lastRow = Range("A1").End(xlDown).Row
 
+    For Each ws In ThisWorkbook.Worksheets
 
-    For I = 2 To lastRow
+        For I = 2 To lastRow - 1
     
-        If Cells(I, "A").Value <> Cells(I + 1, "A").Value Then
+            If Cells(I, "A").Value <> Cells(I + 1, "A").Value Then
         
-            Ticker = Cells(I, "A").Value
+                Ticker = Cells(I, "A").Value
             
-            Total_Stock_Volume = Total_Stock_Volume + Cells(I, "G").Value
+                Total_Stock_Volume = Total_Stock_Volume + Cells(I, "G").Value
             
-            open_price = Cells(start_price_row, "C").Value
+                open_price = Cells(start_price_row, "C").Value
             
-            close_price = Cells(I, "F").Value
-            
-            Yearly_Change = close_price - open_price
-            
-            Percent_Change = Yearly_Change / open_price
-            
-            Range("I" & Summary_Table_Row).Value = Ticker
-            
-            Range("L" & Summary_Table_Row).Value = Total_Stock_Volume
-            
-            Range("J" & Summary_Table_Row).Value = Yearly_Change
-            
-            Range("J" & Summary_Table_Row).NumberFormat = "0.00"
-            
-            If Yearly_Change < 0 Then
-                Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+                close_price = Cells(I, "F").Value
                 
-            ElseIf Yearly_Change > 0 Then
-                 Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
+                Yearly_Change = close_price - open_price
+                
+                Percent_Change = Yearly_Change / open_price
+            
+                Range("I" & Summary_Table_Row).Value = Ticker
+            
+                Range("L" & Summary_Table_Row).Value = Total_Stock_Volume
+            
+                Range("J" & Summary_Table_Row).Value = Yearly_Change
+            
+                Range("J" & Summary_Table_Row).NumberFormat = "0.00"
+            
+                If Yearly_Change < 0 Then
+                    Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+                
+                ElseIf Yearly_Change > 0 Then
+                    Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
                  
+                End If
+            
+            
+                Range("K" & Summary_Table_Row).Value = Percent_Change
+            
+                Range("K" & Summary_Table_Row).NumberFormat = "0.00%"
+            
+                Summary_Table_Row = Summary_Table_Row + 1
+            
+                start_price_row = I + 1
+            
+                Total_Stock_Volume = 0
+            
+            Else
+        
+                Total_Stock_Volume = Total_Stock_Volume + Cells(I, "G").Value
+            
             End If
-            
-            
-            Range("K" & Summary_Table_Row).Value = Percent_Change
-            
-            Range("K" & Summary_Table_Row).NumberFormat = "0.00%"
-            
-            Summary_Table_Row = Summary_Table_Row + 1
-            
-            start_price_row = I + 1
-            
-            Total_Stock_Volume = 0
-            
-        Else
         
-            Total_Stock_Volume = Total_Stock_Volume + Cells(I, "G").Value
-            
-        End If
+        Next I
         
-    Next I
+    Next ws
     
     max_value = Application.WorksheetFunction.Max(Range("K2:K" & lastRow))
     
@@ -112,8 +117,6 @@ Sub Stock_Volume():
     Cells(1, "L").Value = "Total Stock Volume"
     
     
-    
             
 End Sub
-
 
